@@ -1,0 +1,5 @@
+project.pem
+terraform-user_accessKeys.csv
+sonarJenkinstoken.txt
+.terraform/
+.terraform.lock.hcl
