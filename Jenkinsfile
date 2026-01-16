@@ -20,8 +20,8 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/KastroVKiran/DevOps-Project-Swiggy.git'
+                git branch: 'main',
+                    url: 'https://github.com/tathyagatBytelab/swiggy-devops.git'
             }
         }
 
@@ -30,8 +30,9 @@ pipeline {
                 withSonarQubeEnv('sonar-server') {
                     sh '''
                     $SCANNER_HOME/bin/sonar-scanner \
+                      -Dsonar.projectKey=Swiggy \
                       -Dsonar.projectName=Swiggy \
-                      -Dsonar.projectKey=Swiggy
+                      -Dsonar.sources=.
                     '''
                 }
             }
@@ -57,7 +58,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                withDockerRegistry(credentialsId: 'docker-creds', toolName: 'docker') {
+                withDockerRegistry(credentialsId: 'docker-creds') {
                     sh '''
                     docker tag swiggy tathyagat/swiggy:latest
                     docker push tathyagat/swiggy:latest
@@ -79,6 +80,15 @@ pipeline {
                 docker run -d --name swiggy -p 3000:3000 tathyagat/swiggy:latest
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
