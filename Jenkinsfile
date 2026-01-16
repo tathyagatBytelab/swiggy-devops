@@ -52,18 +52,13 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t swiggy .'
+                sh 'docker build -t tathyagat/swiggy:latest .'
             }
         }
 
         stage('Docker Push') {
             steps {
-                withDockerRegistry(credentialsId: 'docker-creds') {
-                    sh '''
-                    docker tag swiggy tathyagat/swiggy:latest
-                    docker push tathyagat/swiggy:latest
-                    '''
-                }
+                sh 'docker push tathyagat/swiggy:latest'
             }
         }
 
@@ -80,15 +75,6 @@ pipeline {
                 docker run -d --name swiggy -p 3000:3000 tathyagat/swiggy:latest
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully'
-        }
-        failure {
-            echo 'Pipeline failed'
         }
     }
 }
