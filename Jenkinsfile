@@ -52,39 +52,28 @@ pipeline {
             }
         }
 
-        stage('Trivy Filesystem Scan') {
-            steps {
-                sh 'trivy fs . > trivy-fs-report.txt'
-                archiveArtifacts artifacts: 'trivy-fs-report.txt', allowEmptyArchive: true
-            }
-        }
-
         stage('Docker Build & Push') {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker-creds') {
                         sh '''
                         docker build -t swiggy .
-                        docker tag swiggy kastrov/swiggy:latest
-                        docker push kastrov/swiggy:latest
+                        docker tag swiggy tathyagat/swiggy:latest
+                        docker push tathyagat/swiggy:latest
                         '''
                     }
                 }
             }
         }
 
-        stage('Trivy Image Scan') {
-            steps {
-                sh 'trivy image kastrov/swiggy:latest > trivy-image-report.txt'
-                archiveArtifacts artifacts: 'trivy-image-report.txt', allowEmptyArchive: true
-            }
-        }
-
-        stage('Deploy to Container') {
+        stage('Deploy Application') {
             steps {
                 sh '''
                 docker rm -f swiggy || true
-                docker run -d --name swiggy -p 3000:3000 kastrov/swiggy:latest
+                docker run -d \
+                  --name swiggy \
+                  -p 3000:3000 \
+                  tathyagat/swiggy:latest
                 '''
             }
         }
