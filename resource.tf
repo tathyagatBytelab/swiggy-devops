@@ -73,13 +73,19 @@ resource "aws_security_group" "project-sg" {
   }
 }
 
-# 7. EC2 Instance in the NEW VPC
+# 7. EC2 Instance in the NEW VPC with Increased Storage
 resource "aws_instance" "web" {
   ami                    = "ami-0dee22c13ea7a9a67"
-  instance_type          = "c7i-flex.large"
-  key_name               = "project"
+  instance_type          = "t3.medium"
+  key_name                = "project"
   vpc_security_group_ids = [aws_security_group.project-sg.id]
   subnet_id              = aws_subnet.public.id
+
+  # THIS SECTION INCREASES YOUR DISK SPACE
+  root_block_device {
+    volume_size = 20    # Set to 20 for safe practice
+    volume_type = "gp3" # Faster and cheaper than gp2
+  }
 
   tags = { Name = "Swiggy-Project-Server" }
 

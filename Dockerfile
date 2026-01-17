@@ -1,5 +1,5 @@
 # Using Node.js 16 as the base image
-FROM node:16
+FROM node:20
 
 # Setting up the working directory
 WORKDIR /app
@@ -21,3 +21,5 @@ EXPOSE 3000
 
 # Start your Node.js server
 CMD ["npm", "start"]
+
+
