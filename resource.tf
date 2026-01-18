@@ -76,14 +76,14 @@ resource "aws_security_group" "project-sg" {
 # 7. EC2 Instance in the NEW VPC with Increased Storage
 resource "aws_instance" "web" {
   ami                    = "ami-0dee22c13ea7a9a67"
-  instance_type          = "t3.medium"
+  instance_type          = "t3.large"     # upgraded"
   key_name                = "project"
   vpc_security_group_ids = [aws_security_group.project-sg.id]
   subnet_id              = aws_subnet.public.id
 
   # THIS SECTION INCREASES YOUR DISK SPACE
   root_block_device {
-    volume_size = 20    # Set to 20 for safe practice
+    volume_size = 26    # Set to 26 for safe practice
     volume_type = "gp3" # Faster and cheaper than gp2
   }
 
